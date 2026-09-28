@@ -1,0 +1,28 @@
+# Robots.txt for Nexus Commerce
+User-agent: *
+
+# Disallow private user & administrative operations
+Disallow: /admin/
+Disallow: /cart
+Disallow: /checkout
+Disallow: /orders/
+Disallow: /profile
+Disallow: /notifications/
+Disallow: /support/
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password/
+Disallow: /order-success/
+Disallow: /payment-failure
+Disallow: /api/
+
+# Allow public crawl discovery
+Allow: /
+Allow: /products
+Allow: /category/
+Allow: /brand/
+Allow: /help
+
+# Dynamic Sitemap Reference
+Sitemap: /sitemap.xml

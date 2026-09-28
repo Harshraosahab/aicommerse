@@ -1,0 +1,30 @@
+{
+  "name": "ecommerce-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-ready AI-powered e-commerce platform",
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:backend": "npm --prefix backend run build",
+    "build:frontend": "npm --prefix frontend run build",
+    "build": "npm run build:backend && npm run build:frontend",
+    "test:backend": "npm --prefix backend run test",
+    "test:frontend": "npm --prefix frontend run test",
+    "test:ai": "cd ai-service && pytest",
+    "test": "npm run test:backend && npm run test:frontend",
+    "lint:backend": "npm --prefix backend run lint",
+    "lint:frontend": "npm --prefix frontend run lint",
+    "lint": "npm run lint:backend && npm run lint:frontend"
+  },
+  "keywords": [
+    "ecommerce",
+    "ai",
+    "production-ready",
+    "react",
+    "express",
+    "fastapi"
+  ],
+  "author": "",
+  "license": "UNLICENSED"
+}
