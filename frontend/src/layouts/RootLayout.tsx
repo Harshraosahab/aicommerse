@@ -6,6 +6,7 @@ import { ErrorBoundary } from '../components/common/ErrorBoundary';
 import { ShoppingAssistantWidget } from '../components/assistant/ShoppingAssistantWidget';
 import { AuthProvider } from '../context/AuthContext';
 import { CartProvider } from '../context/CartContext';
+import { ThemeProvider } from '../context/ThemeContext';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 
 export const RootLayout: React.FC = () => {
@@ -13,9 +14,10 @@ export const RootLayout: React.FC = () => {
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   return (
-    <AuthProvider>
-      <CartProvider>
-        <div className="app-root">
+    <ThemeProvider>
+      <AuthProvider>
+        <CartProvider>
+          <div className="app-root">
           {!isAdminRoute && <Header />}
           <main className={isAdminRoute ? 'admin-root' : 'main-content'} id="main-content" tabIndex={-1}>
             <ErrorBoundary>
@@ -35,6 +37,7 @@ export const RootLayout: React.FC = () => {
         </div>
       </CartProvider>
     </AuthProvider>
+  </ThemeProvider>
   );
 };
 

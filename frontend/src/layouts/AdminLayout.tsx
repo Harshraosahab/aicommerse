@@ -3,6 +3,7 @@ import { NavLink, Outlet, Link, useNavigate } from 'react-router-dom';
 import { SEO } from '../components/common/SEO';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import {
   LayoutDashboard,
   Package,
@@ -85,6 +86,7 @@ const navSections: Array<{ section: string; items: NavItem[] }> = [
 
 export const AdminLayout: React.FC = () => {
   const { user, logout } = useAuth();
+  const { resolvedTheme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -99,8 +101,8 @@ export const AdminLayout: React.FC = () => {
       style={{
         display: 'flex',
         minHeight: '100vh',
-        backgroundColor: 'var(--color-bg-alt, #f8fafc)',
-        color: '#0f172a',
+        backgroundColor: 'var(--color-bg)',
+        color: 'var(--color-text)',
       }}
     >
       <SEO title="Admin Control Center" noIndex={true} />
@@ -268,8 +270,8 @@ export const AdminLayout: React.FC = () => {
         <header
           style={{
             height: '60px',
-            backgroundColor: '#ffffff',
-            borderBottom: '1px solid var(--color-border, #e2e8f0)',
+            backgroundColor: 'var(--color-surface)',
+            borderBottom: '1px solid var(--color-border)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -277,6 +279,7 @@ export const AdminLayout: React.FC = () => {
             position: 'sticky',
             top: 0,
             zIndex: 30,
+            transition: 'background-color var(--transition-normal), border-color var(--transition-normal)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
@@ -286,7 +289,7 @@ export const AdminLayout: React.FC = () => {
               style={{
                 background: 'transparent',
                 border: 'none',
-                color: '#475569',
+                color: 'var(--color-text-muted)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -300,7 +303,30 @@ export const AdminLayout: React.FC = () => {
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+            {/* Admin Theme Toggle Button */}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
+              title={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
+              style={{
+                background: 'transparent',
+                border: '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-md)',
+                padding: '6px 12px',
+                cursor: 'pointer',
+                fontSize: '13px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                color: 'var(--color-text)',
+              }}
+            >
+              <span>{resolvedTheme === 'dark' ? '☀️' : '🌙'}</span>
+              <span style={{ fontSize: '12px', fontWeight: 500 }}>{resolvedTheme === 'dark' ? 'Light' : 'Dark'}</span>
+            </button>
+
             <Link
               to="/"
               style={{
@@ -308,7 +334,7 @@ export const AdminLayout: React.FC = () => {
                 alignItems: 'center',
                 gap: 'var(--space-1)',
                 fontSize: 'var(--font-size-sm)',
-                color: '#475569',
+                color: 'var(--color-text-muted)',
                 textDecoration: 'none',
                 fontWeight: 500,
               }}

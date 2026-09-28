@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { healthService } from '../../services/healthService';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
+import { useTheme } from '../../context/ThemeContext';
 import { notificationApi, NotificationItem } from '../../services/notificationApi';
 
 export const Header: React.FC = () => {
@@ -12,6 +13,7 @@ export const Header: React.FC = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
   const { cartCount, wishlistCount } = useCart();
+  const { resolvedTheme, toggleTheme } = useTheme();
 
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
@@ -297,6 +299,18 @@ export const Header: React.FC = () => {
               🛒 ({cartCount})
             </Link>
 
+            {/* Theme Switcher Toggle */}
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={toggleTheme}
+              aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
+              title={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
+              style={{ fontSize: '15px', padding: '0 8px' }}
+            >
+              {resolvedTheme === 'dark' ? '☀️' : '🌙'}
+            </button>
+
             {/* User Account State */}
             {isAuthenticated && user ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
@@ -384,6 +398,26 @@ export const Header: React.FC = () => {
                   </Link>
                 </>
               )}
+
+              {/* Mobile Theme Switcher */}
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="mobile-nav-link"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--space-2)',
+                  textAlign: 'left',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 'var(--space-2) 0',
+                }}
+              >
+                <span>{resolvedTheme === 'dark' ? '☀️' : '🌙'}</span>
+                <span>Switch to {resolvedTheme === 'dark' ? 'Light' : 'Dark'} Mode</span>
+              </button>
             </nav>
           </div>
         </div>

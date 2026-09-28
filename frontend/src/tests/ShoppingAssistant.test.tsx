@@ -10,6 +10,15 @@ vi.mock('../services/aiApi', () => ({
   },
 }));
 
+const mockAddToCart = vi.fn().mockResolvedValue(undefined);
+vi.mock('../context/CartContext', () => ({
+  useCart: () => ({
+    addToCart: mockAddToCart,
+    cartCount: 0,
+    wishlistCount: 0,
+  }),
+}));
+
 describe('ShoppingAssistantWidget Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -36,7 +45,7 @@ describe('ShoppingAssistantWidget Tests', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('sends user message and displays assistant response with product previews', async () => {
+  it('sends user message and displays assistant response with interactive product cards', async () => {
     vi.mocked(aiApi.assistantChat).mockResolvedValueOnce({
       success: true,
       data: {
@@ -51,6 +60,7 @@ describe('ShoppingAssistantWidget Tests', () => {
                 name: 'Pro Speed Runner',
                 slug: 'pro-speed-runner',
                 price: 2499,
+                SKU: 'PRO-RUN-01',
                 images: ['https://example.com/shoe.jpg'],
               },
             ],
@@ -70,7 +80,7 @@ describe('ShoppingAssistantWidget Tests', () => {
     fireEvent.click(screen.getByRole('button', { name: /open ai shopping assistant/i }));
 
     // Type query
-    const input = screen.getByPlaceholderText(/ask about shoes/i);
+    const input = screen.getByPlaceholderText(/ask about products/i);
     fireEvent.change(input, { target: { value: 'running shoes under 3000' } });
 
     const sendBtn = screen.getByRole('button', { name: /send message/i });
@@ -82,7 +92,14 @@ describe('ShoppingAssistantWidget Tests', () => {
       expect(screen.getByText("I've searched our catalog for running shoes:")).toBeInTheDocument();
       expect(screen.getByText('Pro Speed Runner')).toBeInTheDocument();
       expect(screen.getByText('Filter by brand')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /add to cart/i })).toBeInTheDocument();
     });
+
+    // Test direct Add to Cart click
+    const addToCartBtn = screen.getByRole('button', { name: /add to cart/i });
+    fireEvent.click(addToCartBtn);
+
+    expect(mockAddToCart).toHaveBeenCalledWith('p1', 'PRO-RUN-01', 1);
   });
 
   it('renders cart summary tool preview when checking cart', async () => {
@@ -115,13 +132,29 @@ describe('ShoppingAssistantWidget Tests', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /open ai shopping assistant/i }));
 
-    const input = screen.getByPlaceholderText(/ask about shoes/i);
+    const input = screen.getByPlaceholderText(/ask about products/i);
     fireEvent.change(input, { target: { value: 'what is in my cart' } });
     fireEvent.click(screen.getByRole('button', { name: /send message/i }));
 
     await waitFor(() => {
       expect(screen.getByText(/Cart Total:/i)).toBeInTheDocument();
-      expect(screen.getByText(/Go to Checkout & Cart →/i)).toBeInTheDocument();
+      expect(screen.getByText(/View Cart/i)).toBeInTheDocument();
+      expect(screen.getByText(/Checkout →/i)).toBeInTheDocument();
     });
+  });
+
+  it('resets conversation when clicking Reset button', () => {
+    render(
+      <MemoryRouter>
+        <ShoppingAssistantWidget />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /open ai shopping assistant/i }));
+
+    const resetBtn = screen.getByRole('button', { name: /reset conversation/i });
+    fireEvent.click(resetBtn);
+
+    expect(screen.getByText(/Conversation reset!/i)).toBeInTheDocument();
   });
 });
