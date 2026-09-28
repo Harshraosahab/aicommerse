@@ -16,7 +16,8 @@
     "lint:backend": "npm --prefix backend run lint",
     "lint:frontend": "npm --prefix frontend run lint",
     "lint": "npm run lint:backend && npm run lint:frontend",
-    "seed:admin": "npm --prefix backend run seed:admin"
+    "seed:admin": "npm --prefix backend run seed:admin",
+    "seed": "npm --prefix backend run seed"
   },
   "keywords": [
     "ecommerce",
